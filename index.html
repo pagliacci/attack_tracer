@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .wanna-be-console {
+            display: table;
+            background-color: black;
+        }
+
+        .wanna-be-console .events-list li,
+        .wanna-be-console .headers {
+            display: table-row;
+        }
+
+        .wanna-be-console span {
+            display: table-cell;
+            padding: 10px;
+            color: white;
+            font-family: "Lucida Console", Monaco, monospace;
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const headers = [
+            'time',
+            'attack type',
+            'source country',
+            'source city',
+            'source ip',
+            'destination country',
+            'destination city',
+            'destination ip',
+            'login',
+            'password'
+        ];
+        let socket = io.connect('/');
+        let existingEvents = [];
+        let createLi = function (data) {
+            let li = document.createElement('li');
+            // li.innerHTML =
+            //     `<span class="time">${data.time}</span>
+            //     <span class="source">${data.from}</span>
+            //     <span class="source-city">${data.src_city}</span>
+            //     <span class="source-ip">${data.src_ip}</span>
+            //     <span class="target">${data.to}</span>
+            //     <span class="target-ip">${data.dstIp}</span>
+            //     <span class="attack-type">${data.attackType}</span>
+            //     <span class="username">${data.login}</span>
+            //     <span class="password">${data.password}</span>`;
+            li.innerHTML =
+                `<span>${data.time}</span>
+                <span>${data.attack_type}</span>
+                <span>${data.src_country}</span>
+                <span>${data.src_city}</span>
+                <span>${data.src_ip}</span>
+                <span>${data.dst_country}</span>
+                <span>${data.dst_city}</span>
+                <span>${data.dst_ip}</span>
+                <span>${data.login}</span>
+                <span>${data.password}</span>`;
+                
+                // <span>${data.dst_latitude}</span>
+                // <span>${data.dst_longitude}</span>
+                
+                // <span>${data.src_latitude}</span>
+                // <span>${data.src_longitude}</span>
+
+            return li;
+        };
+        let updateList = function () {
+            let list = document.getElementsByClassName('events-list')[0];
+            list.innerHTML = '';
+            headers.forEach(h => {
+                const header = document.createElement('span');
+                header.innerHTML = h;
+                list.appendChild(header);
+            });
+            let listElements = existingEvents.map(e => createLi(e));
+            listElements.forEach(e => list.appendChild(e));
+        };
+        socket.on('existingLog', function (log) {
+            // existingEvents.push.apply(existingEvents, log);
+            existingEvents.push(...log.log);
+            // document.getElementById('data').innerHTML = data.data;
+            updateList();
+            console.log(log);
+        });
+        socket.on('update', function (data) {
+            existingEvents.push(data.data);
+            updateList();
+            console.log(data);
+        });
+    </script>
+</head>
+
+<body>
+    <div class="wanna-be-console">
+        <ul class="events-list">
+        </ul>
+    </div>
+</body>
+
+</html>
