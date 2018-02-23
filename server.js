@@ -2,12 +2,15 @@ let express = require('express');
 let app = express();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
+let path = require('path');
 
 app.use(express.json());
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
+
+app.use('/static', express.static(__dirname + '/public'));
 
 const TTL = 24;
 let log = [];
