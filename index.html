@@ -117,21 +117,18 @@
             console.log(d);
         });
 
-        var geojson = {
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
-                        [0, 0]
-                    ]
-                }
-            }]
-        };
-
-
         function qwe(src, dst, n) {
+
+          var geojson = {
+              "type": "FeatureCollection",
+              "features": [{
+                  "type": "Feature",
+                  "geometry": {
+                      "type": "LineString",
+                      "coordinates": [src]
+                  }
+              }]
+          };
 
             var route = {
                 "type": "FeatureCollection",
@@ -180,15 +177,17 @@
                 "data": point
             });
 
-            // map.addLayer({
-            //     "id": "route",
-            //     "source": "route",
-            //     "type": "line",
-            //     "paint": {
-            //         "line-width": 2,
-            //         "line-color": "#007cbf"
-            //     }
-            // });
+            map.addSource('line-animation' + n, {
+                "type": "geojson",
+                "data": geojson
+            });
+
+            var speedFactor = 30; // number of frames per longitude degree
+            var animation; // to store and cancel the animation
+            var startTime = 0;
+            var progress = 0; // progress = timestamp - startTime
+            var resetTime = false; // indicator of whether time reset is needed for the animation
+            var pauseButton = document.getElementById('pause');
 
             map.addLayer({
                 "id": "point" + n,
@@ -201,9 +200,39 @@
                 }
             });
 
+            map.addLayer({
+                    'id': 'line-animation' + n,
+                    'type': 'line',
+                    'source': 'line-animation' + n,
+                    'layout': {
+                        'line-cap': 'round',
+                        'line-join': 'round'
+                    },
+                    'paint': {
+                        'line-color': '#ed6498',
+                        'line-width': 1,
+                        'line-opacity': .8
+                    }
+                });
+
             var counter = 0;
 
-            animate();
+            //animate();
+            animateLine();
+
+            function animateLine(timestamp) {
+                point.features[0].geometry.coordinates = route.features[0].geometry.coordinates[counter];
+                let currentCoordinates = point.features[0].geometry.coordinates;
+                geojson.features[0].geometry.coordinates.push(currentCoordinates);
+                map.getSource('line-animation' + n).setData(geojson);
+                if (currentCoordinates[0] !== dst[0] && currentCoordinates[1] !== dst[1]) {
+                    requestAnimationFrame(animateLine);
+                }
+                else {
+                    map.removeLayer('line-animation' + n);
+                }
+                counter = counter + 20;
+            }
 
             function animate(timestamp) {
                 // Update point geometry to a new position based on counter denoting
