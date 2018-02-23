@@ -9,28 +9,19 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-// TODO: make working with static in normal way
-app.get('/L.Polyline.SnakeAnim.js', function(req, res) {
-    res.sendFile(__dirname + '/libs/L.Polyline.SnakeAnim.js');
-});
-
-app.get('/MovingMarker.js', function(req, res) {
-    res.sendFile(__dirname + '/libs/MovingMarker.js');
-});
-
 const TTL = 24;
 let log = [];
 
 let template = {
     "src_city": "St Petersburg",
-    "dst_latitude": 59.8944,
-    "dst_longitude": 30.2642,
-    "src_longitude": 30.2642,
+    "dst_latitude": 30.2642,
+    "dst_longitude": 59.8944,
+    "src_latitude": -74.00598,
+    "src_longitude": 40.71448,
     "dst_city": "St Petersburg",
     "src_country": "Russia",
     "password": "qwe",
     "attack_type": "ssh_bruteforce",
-    "src_latitude": 59.8944,
     "src_ip": "188.227.10.209",
     "dst_country": "Russia",
     "time": "2018-02-23T10:33:19.866686",

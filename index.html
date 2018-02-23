@@ -94,7 +94,9 @@
         mapboxgl.accessToken = 'pk.eyJ1IjoiYmFyYWJ1bGxrbyIsImEiOiJjamUwNjBienQxaTQzMnBvaHZ4OTlsc2t5In0._nrXaI2sCkGLXbIw6GgvdQ';
         var map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/mapbox/dark-v9'
+            style: 'mapbox://styles/mapbox/dark-v9',
+            zoom: 0,
+            interactive: false
         });
 
         socket.on('existingLog', function (log) {
@@ -102,14 +104,16 @@
             updateList();
             console.log(log);
         });
+        var qweasd = 0;
         socket.on('update', function (data) {
+            qweasd++;
             let d = data.data;
             existingEvents.push(d);
             updateList();
             let src = [d.src_latitude, d.src_longitude];
             let dst = [d.dst_latitude, d.dst_longitude];
 
-            qwe(src, dst);
+            qwe(src, dst, qweasd);
             console.log(d);
         });
 
@@ -126,10 +130,8 @@
             }]
         };
 
-        var qweasd = 0;
 
-        function qwe(src, dst) {
-            qweasd++;
+        function qwe(src, dst, n) {
 
             var route = {
                 "type": "FeatureCollection",
@@ -145,7 +147,6 @@
                 }]
             };
 
-            // qweasd++;
             var arc = [];
 
             var point = {
@@ -174,7 +175,7 @@
             //     "data": route
             // });
 
-            map.addSource('point' + qweasd, {
+            map.addSource('point' + n, {
                 "type": "geojson",
                 "data": point
             });
@@ -190,8 +191,8 @@
             // });
 
             map.addLayer({
-                "id": "point" + qweasd,
-                "source": "point" + qweasd,
+                "id": "point" + n,
+                "source": "point" + n,
                 "type": "symbol",
                 "layout": {
                     "icon-image": "airport-15",
@@ -210,7 +211,7 @@
                 point.features[0].geometry.coordinates = route.features[0].geometry.coordinates[counter];
 
                 // Update the source with this new data.
-                map.getSource('point' + qweasd).setData(point);
+                map.getSource('point' + n).setData(point);
 
                 // Request the next frame of animation so long as destination has not
                 // been reached.
@@ -219,7 +220,7 @@
                     requestAnimationFrame(animate);
                 }
                 else {
-                    map.removeLayer('point' + qweasd);
+                    map.removeLayer('point' + n);
                 }
 
                 counter = counter + 5;
