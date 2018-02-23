@@ -12,6 +12,11 @@
             background-color: black;
         }
 
+        .wanna-be-console ul {
+            max-height: 200px;
+            overflow: auto;
+        }
+
         .wanna-be-console .events-list li,
         .wanna-be-console .headers {
             display: table-row;
@@ -23,8 +28,26 @@
             color: white;
             font-family: "Lucida Console", Monaco, monospace;
         }
+
+        #map {
+            width: 1600px;
+            height: 800px;
+        }
     </style>
     <script src="/socket.io/socket.io.js"></script>
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js' charset='utf-8'></script>
+
+</head>
+
+<body>
+    <div class="wanna-be-console">
+        <ul class="events-list">
+        </ul>
+    </div>
+    <div id="map"></div>
     <script>
         const headers = [
             'time',
@@ -42,16 +65,6 @@
         let existingEvents = [];
         let createLi = function (data) {
             let li = document.createElement('li');
-            // li.innerHTML =
-            //     `<span class="time">${data.time}</span>
-            //     <span class="source">${data.from}</span>
-            //     <span class="source-city">${data.src_city}</span>
-            //     <span class="source-ip">${data.src_ip}</span>
-            //     <span class="target">${data.to}</span>
-            //     <span class="target-ip">${data.dstIp}</span>
-            //     <span class="attack-type">${data.attackType}</span>
-            //     <span class="username">${data.login}</span>
-            //     <span class="password">${data.password}</span>`;
             li.innerHTML =
                 `<span>${data.time}</span>
                 <span>${data.attack_type}</span>
@@ -63,12 +76,6 @@
                 <span>${data.dst_ip}</span>
                 <span>${data.login}</span>
                 <span>${data.password}</span>`;
-                
-                // <span>${data.dst_latitude}</span>
-                // <span>${data.dst_longitude}</span>
-                
-                // <span>${data.src_latitude}</span>
-                // <span>${data.src_longitude}</span>
 
             return li;
         };
@@ -77,32 +84,148 @@
             list.innerHTML = '';
             headers.forEach(h => {
                 const header = document.createElement('span');
-                header.innerHTML = h;
+                header.innerHTML = h.toUpperCase();
                 list.appendChild(header);
             });
             let listElements = existingEvents.map(e => createLi(e));
             listElements.forEach(e => list.appendChild(e));
         };
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYmFyYWJ1bGxrbyIsImEiOiJjamUwNjBienQxaTQzMnBvaHZ4OTlsc2t5In0._nrXaI2sCkGLXbIw6GgvdQ';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/dark-v9'
+        });
+
         socket.on('existingLog', function (log) {
-            // existingEvents.push.apply(existingEvents, log);
             existingEvents.push(...log.log);
-            // document.getElementById('data').innerHTML = data.data;
             updateList();
             console.log(log);
         });
         socket.on('update', function (data) {
-            existingEvents.push(data.data);
+            let d = data.data;
+            existingEvents.push(d);
             updateList();
-            console.log(data);
-        });
-    </script>
-</head>
+            let src = [d.src_latitude, d.src_longitude];
+            let dst = [d.dst_latitude, d.dst_longitude];
 
-<body>
-    <div class="wanna-be-console">
-        <ul class="events-list">
-        </ul>
-    </div>
+            qwe(src, dst);
+            console.log(d);
+        });
+
+        var geojson = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [
+                        [0, 0]
+                    ]
+                }
+            }]
+        };
+
+        var qweasd = 0;
+
+        function qwe(src, dst) {
+            qweasd++;
+
+            var route = {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                            src,
+                            dst
+                        ]
+                    }
+                }]
+            };
+
+            // qweasd++;
+            var arc = [];
+
+            var point = {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": origin
+                    }
+                }]
+            };
+
+            var lineDistance = turf.lineDistance(route.features[0], 'kilometers');
+
+            // Draw an arc between the `origin` & `destination` of the two points
+            for (var i = 0; i < lineDistance; i++) {
+                var segment = turf.along(route.features[0], i / 1000 * lineDistance, 'kilometers');
+                arc.push(segment.geometry.coordinates);
+            }
+
+            route.features[0].geometry.coordinates = arc;
+
+            // map.addSource('route', {
+            //     "type": "geojson",
+            //     "data": route
+            // });
+
+            map.addSource('point' + qweasd, {
+                "type": "geojson",
+                "data": point
+            });
+
+            // map.addLayer({
+            //     "id": "route",
+            //     "source": "route",
+            //     "type": "line",
+            //     "paint": {
+            //         "line-width": 2,
+            //         "line-color": "#007cbf"
+            //     }
+            // });
+
+            map.addLayer({
+                "id": "point" + qweasd,
+                "source": "point" + qweasd,
+                "type": "symbol",
+                "layout": {
+                    "icon-image": "airport-15",
+                    "icon-rotate": 90,
+                    "icon-allow-overlap": true
+                }
+            });
+
+            var counter = 0;
+
+            animate();
+
+            function animate(timestamp) {
+                // Update point geometry to a new position based on counter denoting
+                // the index to access the arc.
+                point.features[0].geometry.coordinates = route.features[0].geometry.coordinates[counter];
+
+                // Update the source with this new data.
+                map.getSource('point' + qweasd).setData(point);
+
+                // Request the next frame of animation so long as destination has not
+                // been reached.
+                let currentCoordinates = point.features[0].geometry.coordinates;
+                if (currentCoordinates[0] !== dst[0] && currentCoordinates[1] !== dst[1]) {
+                    requestAnimationFrame(animate);
+                }
+                else {
+                    map.removeLayer('point' + qweasd);
+                }
+
+                counter = counter + 5;
+            }
+        }
+    </script>
 </body>
 
 </html>

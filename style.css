@@ -1,0 +1,16 @@
+.wanna-be-console {
+    display: table;
+    background-color: black;
+}
+
+.wanna-be-console .events-list li,
+.wanna-be-console .headers {
+    display: table-row;
+}
+
+.wanna-be-console span {
+    display: table-cell;
+    padding: 10px;
+    color: white;
+    font-family: "Lucida Console", Monaco, monospace;
+}

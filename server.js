@@ -9,6 +9,15 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
+// TODO: make working with static in normal way
+app.get('/L.Polyline.SnakeAnim.js', function(req, res) {
+    res.sendFile(__dirname + '/libs/L.Polyline.SnakeAnim.js');
+});
+
+app.get('/MovingMarker.js', function(req, res) {
+    res.sendFile(__dirname + '/libs/MovingMarker.js');
+});
+
 const TTL = 24;
 let log = [];
 
