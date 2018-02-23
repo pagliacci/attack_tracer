@@ -1,6 +1,15 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
 .wanna-be-console {
     display: table;
     background-color: black;
+    bottom: 0;
+    position: absolute;
+    z-index: 2;
 }
 
 .wanna-be-console ul {
@@ -21,6 +30,6 @@
 }
 
 #map {
-    width: 1600px;
-    height: 800px;
+    width: 100%;
+    height: calc(100% - 100px);
 }
