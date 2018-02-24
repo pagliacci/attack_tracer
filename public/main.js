@@ -16,11 +16,11 @@
         let li = document.createElement('li');
         li.innerHTML =
             `<span>${data.time}</span>
-            <span>${data.src_country}</span>
-            <span>${data.src_city}</span>
+            <span>${data.src_country || '-'}</span>
+            <span>${data.src_city || '-'}</span>
             <span>${data.src_ip}</span>
-            <span>${data.dst_country}</span>
-            <span>${data.dst_city}</span>
+            <span>${data.dst_country || '-'}</span>
+            <span>${data.dst_city || '-'}</span>
             <span>${data.dst_ip}</span>
             <span>${data.login}</span>
             <span>${data.password}</span>`;
