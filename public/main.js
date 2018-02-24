@@ -1,7 +1,6 @@
 (function() {
     const headers = [
         'time',
-        'attack type',
         'source country',
         'source city',
         'source ip',
@@ -17,7 +16,6 @@
         let li = document.createElement('li');
         li.innerHTML =
             `<span>${data.time}</span>
-            <span>${data.attack_type}</span>
             <span>${data.src_country}</span>
             <span>${data.src_city}</span>
             <span>${data.src_ip}</span>
@@ -61,8 +59,8 @@
         let d = data.data;
         existingEvents.push(d);
         updateList();
-        let src = [d.src_latitude, d.src_longitude];
-        let dst = [d.dst_latitude, d.dst_longitude];
+        let src = [d.src_longitude, d.src_latitude]; //idk pochemu tak
+        let dst = [d.dst_longitude, d.dst_latitude];
 
         showTrace(src, dst, lastTraceId);
         console.log(d);
