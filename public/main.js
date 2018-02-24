@@ -58,6 +58,7 @@
         lastTraceId++;
         let d = data.data;
         existingEvents.push(d);
+        existingEvents = existingEvents.slice(-100);
         updateList();
         let src = [d.src_longitude, d.src_latitude]; //idk pochemu tak
         let dst = [d.dst_longitude, d.dst_latitude];
