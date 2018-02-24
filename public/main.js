@@ -158,6 +158,8 @@
             }
             else {
                 map.removeLayer(lineAnimationId);
+                map.removeLayer(pointId);
+                return;
             }
             counter = counter + 1;
         }
