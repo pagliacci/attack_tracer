@@ -137,8 +137,8 @@
                 'line-join': 'round'
             },
             'paint': {
-                'line-color': '#ed6498',
-                'line-width': 3,
+                'line-color': '#e00f25',
+                'line-width': 2,
                 'line-opacity': .8
             }
         });

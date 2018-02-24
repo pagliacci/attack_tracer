@@ -30,3 +30,9 @@ html, body {
     width: 100%;
     height: calc(100% - 100px);
 }
+
+#logo {
+  height: 75pt;
+  position: absolute;
+  z-index: 2;
+}
