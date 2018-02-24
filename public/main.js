@@ -51,7 +51,7 @@
 
     socket.on('existingLog', function (log) {
         existingEvents.push(...log.log);
-        updateList();
+        // updateList();
         console.log(log);
     });
 
@@ -60,7 +60,7 @@
         lastTraceId++;
         let d = data.data;
         existingEvents.push(d);
-        updateList();
+        // updateList();
         let src = [d.src_latitude, d.src_longitude];
         let dst = [d.dst_latitude, d.dst_longitude];
 
@@ -112,7 +112,7 @@
 
         let arc = [];
         // Draw an arc between the `origin` & `destination` of the two points
-        for (let i = 0; i < lineDistance; i++) {
+        for (let i = 0; i < lineDistance; i += 50) {
             let segment = turf.along(route.features[0], i / 1000 * lineDistance, 'kilometers');
             arc.push(segment.geometry.coordinates);
         }
@@ -171,7 +171,7 @@
             else {
                 map.removeLayer(lineAnimationId);
             }
-            counter = counter + 20;
+            counter = counter + 1;
         }
     }
 })();
