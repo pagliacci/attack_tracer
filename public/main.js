@@ -100,7 +100,7 @@
 
         let arc = [];
         // Draw an arc between the `origin` & `destination` of the two points
-        for (let i = 0; i < lineDistance; i += 50) {
+        for (let i = 0; i < lineDistance; i += 10) {
             let segment = turf.along(route.features[0], i / 1000 * lineDistance, 'kilometers');
             arc.push(segment.geometry.coordinates);
         }
