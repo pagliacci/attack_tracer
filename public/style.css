@@ -4,29 +4,26 @@ html, body {
     margin: 0;
 }
 
-.wanna-be-console {
-    display: table;
-    background-color: black;
+.table-container {
     bottom: 0;
     position: absolute;
     z-index: 2;
-}
-
-.wanna-be-console ul {
+    width: 100%;
     max-height: 200px;
     overflow: auto;
 }
 
-.wanna-be-console .events-list li,
-.wanna-be-console .headers {
-    display: table-row;
+.wanna-be-console {
+    background-color: black;
+    width: 100%;
+    text-align: center;
 }
 
-.wanna-be-console span {
-    display: table-cell;
+.wanna-be-console tr, .wanna-be-console th {
     padding: 10px;
     color: white;
     font-family: "Lucida Console", Monaco, monospace;
+    font-weight: normal;
 }
 
 #map {

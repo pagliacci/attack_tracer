@@ -1,44 +1,30 @@
 (function () {
-    const headers = [
-        'time',
-        'source country',
-        'source city',
-        'source ip',
-        'destination country',
-        'destination city',
-        'destination ip',
-        'login',
-        'password'
-    ];
     let socket = io.connect('/');
-    let createLi = function (data) {
-        let li = document.createElement('li');
+    let createTableRow = function (data) {
+        let li = document.createElement('tr');
+        let date = new Date(data.time);
+        let time = date.toString().match(/\d\d:\d\d:\d\d/g)[0]
         li.innerHTML =
-            `<span>${data.time}</span>
-            <span>${data.src_country || '-'}</span>
-            <span>${data.src_city || '-'}</span>
-            <span>${data.src_ip}</span>
-            <span>${data.dst_country || '-'}</span>
-            <span>${data.dst_city || '-'}</span>
-            <span>${data.dst_ip}</span>
-            <span>${data.login}</span>
-            <span>${data.password}</span>`;
+            `<td>${time}</td>
+            <td>${data.src_country || '-'}</td>
+            <td>${data.src_city || '-'}</td>
+            <td>${data.src_ip}</td>
+            <td>${data.dst_country || '-'}</td>
+            <td>${data.dst_city || '-'}</td>
+            <td>${data.dst_ip}</td>
+            <td>${data.login}</td>
+            <td>${data.password}</td>`;
 
         return li;
     };
     let setListContent = function (events) {
-        let list = document.getElementsByClassName('events-list')[0];
-        headers.forEach(h => {
-            const header = document.createElement('span');
-            header.innerHTML = h.toUpperCase();
-            list.appendChild(header);
-        });
-        let listElements = events.slice(-20).map(e => createLi(e));
+        let list = document.getElementsByClassName('events')[0];
+        let listElements = events.slice(-20).map(e => createTableRow(e));
         listElements.slice().reverse().forEach(e => list.appendChild(e));
     };
     let updateList = function (event) {
-        let list = document.getElementsByClassName('events-list')[0];
-        let li = createLi(event);
+        let list = document.getElementsByClassName('events')[0];
+        let li = createTableRow(event);
         list.insertBefore(li, list.firstChild);
         if (list.children.length > 20) {
             list.removeChild(list.lastChild);
