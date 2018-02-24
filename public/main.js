@@ -1,4 +1,4 @@
-(function() {
+(function () {
     const headers = [
         'time',
         'source country',
@@ -11,7 +11,6 @@
         'password'
     ];
     let socket = io.connect('/');
-    let existingEvents = [];
     let createLi = function (data) {
         let li = document.createElement('li');
         li.innerHTML =
@@ -27,16 +26,23 @@
 
         return li;
     };
-    let updateList = function () {
+    let setListContent = function (events) {
         let list = document.getElementsByClassName('events-list')[0];
-        list.innerHTML = '';
         headers.forEach(h => {
             const header = document.createElement('span');
             header.innerHTML = h.toUpperCase();
             list.appendChild(header);
         });
-        let listElements = existingEvents.map(e => createLi(e));
+        let listElements = events.slice(-20).map(e => createLi(e));
         listElements.slice().reverse().forEach(e => list.appendChild(e));
+    };
+    let updateList = function (event) {
+        let list = document.getElementsByClassName('events-list')[0];
+        let li = createLi(event);
+        list.insertBefore(li, list.firstChild);
+        if (list.children.length > 20) {
+            list.removeChild(list.lastChild);
+        }
     };
 
     mapboxgl.accessToken = 'pk.eyJ1IjoiYmFyYWJ1bGxrbyIsImEiOiJjamUwNjBienQxaTQzMnBvaHZ4OTlsc2t5In0._nrXaI2sCkGLXbIw6GgvdQ';
@@ -48,23 +54,20 @@
     });
 
     socket.on('existingLog', function (log) {
-        existingEvents.push(...log.log);
-        updateList();
-        console.log(log);
+        setListContent(log.log);
+        // console.log(log);
     });
 
     let lastTraceId = 0;
     socket.on('update', function (data) {
         lastTraceId++;
         let d = data.data;
-        existingEvents.push(d);
-        existingEvents = existingEvents.slice(-100);
-        updateList();
+        updateList(data.data);
         let src = [d.src_longitude, d.src_latitude]; //idk pochemu tak
         let dst = [d.dst_longitude, d.dst_latitude];
 
         showTrace(src, dst, lastTraceId);
-        console.log(d);
+        // console.log(d);
     });
 
     function showTrace(src, dst, traceId) {
