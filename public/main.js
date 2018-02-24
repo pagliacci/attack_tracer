@@ -151,7 +151,7 @@
             point.features[0].geometry.coordinates = route.features[0].geometry.coordinates[counter];
             let currentCoordinates = point.features[0].geometry.coordinates;
             geojson.features[0].geometry.coordinates.push(currentCoordinates);
-            geojson.features[0].geometry.coordinates = geojson.features[0].geometry.coordinates.slice(-5);
+            geojson.features[0].geometry.coordinates = geojson.features[0].geometry.coordinates.slice(-20);
             map.getSource(lineAnimationId).setData(geojson);
             if (currentCoordinates[0] !== dst[0] && currentCoordinates[1] !== dst[1]) {
                 requestAnimationFrame(animateLine);
