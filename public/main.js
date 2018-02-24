@@ -51,7 +51,7 @@
 
     socket.on('existingLog', function (log) {
         existingEvents.push(...log.log);
-        // updateList();
+        updateList();
         console.log(log);
     });
 
@@ -60,7 +60,7 @@
         lastTraceId++;
         let d = data.data;
         existingEvents.push(d);
-        // updateList();
+        updateList();
         let src = [d.src_latitude, d.src_longitude];
         let dst = [d.dst_latitude, d.dst_longitude];
 
