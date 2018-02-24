@@ -12,7 +12,6 @@ app.get('/', function (req, res) {
 
 app.use('/static', express.static(__dirname + '/public'));
 
-const TTL = 24;
 let log = [];
 
 let template = {
@@ -35,6 +34,7 @@ let template = {
 app.post('/', function (req, res) {
     const data = req.body;
     log.push(data);
+    log = log.slice(-100);
     console.log(JSON.stringify(data));
     io.emit('update', { data: data });
     res.send('POST Success');
@@ -42,7 +42,6 @@ app.post('/', function (req, res) {
 
 io.on('connection', function (socket) {
     socket.emit('existingLog', { log: log });
-    // socket.emit('announcements', { message: 'A new user has joined!' + data });
 });
 
 server.listen(8080);
