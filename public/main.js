@@ -104,6 +104,16 @@
             let segment = turf.along(route.features[0], i / 1000 * lineDistance, 'kilometers');
             arc.push(segment.geometry.coordinates);
         }
+        if(arc.some(v => v[0] < 0) && arc.some(v => v[0] > 0)) {
+            const positiveCount = arc.filter(v => v[0] > 0).length;
+            const negativeCount = arc.filter(v => v[0] < 0).length;
+            if(positiveCount > negativeCount) {
+                arc = arc.filter(v => v[0] > 0);
+            } else {
+                arc = arc.filter(v => v[0] < 0);
+            }
+            geojson.features[0].geometry.coordinates[0] = arc[0];
+        }
 
         route.features[0].geometry.coordinates = arc;
 
