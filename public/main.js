@@ -1,4 +1,14 @@
-const NUMBER_OF_SAVED_TRACES = 20;
+const gui = new dat.GUI();
+
+const settings = {
+    numberOfSavedTraces: 30,
+    lineWidth: 2
+};
+
+gui.add(settings, 'numberOfSavedTraces', 1, 100);
+gui.add(settings, 'lineWidth', 1, 10);
+
+const NUMBER_OF_SAVED_TRACES = 30;
 const PX_RATIO = 2;
 const LINE_WIDTH = 2;
 const FIREWORK_DISTANCE = 100;
@@ -93,13 +103,16 @@ function tryToAnimate() {
     const ctx = canvas.getContext('2d');
 
     ctx.strokeStyle = '#F3161F';
-    ctx.lineWidth = 1.5 * PX_RATIO;
+    // ctx.lineWidth = settings.lineWidth * PX_RATIO;
 
     draw();
 
     function draw(timestamp) {
+        ctx.lineWidth = settings.lineWidth * PX_RATIO;
+
         traces = traces.filter(p => p.isActual);
 
+        // const initialArcRadius = 30 * PX_RATIO;
         const initialArcRadius = 30 * PX_RATIO;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -129,7 +142,8 @@ function tryToAnimate() {
                 // probably could be merged with the next piece
                 p.tracePoints.forEach((tracePoint, index) => {
                     ctx.beginPath();
-                    ctx.strokeStyle = `rgba(255, 0, 0, ${1 * index / NUMBER_OF_SAVED_TRACES})`;
+                    // ctx.strokeStyle = `rgba(255, 0, 0, ${1 * index / NUMBER_OF_SAVED_TRACES})`;
+                    ctx.strokeStyle = `rgba(255, 0, 0, ${1 * index / settings.numberOfSavedTraces})`;
                     // ctx.lineWidth = LINE_WIDTH * index / NUMBER_OF_SAVED_TRACES;
                     ctx.moveTo(tracePoint.startCoords[0], tracePoint.startCoords[1]);
                     ctx.lineTo(tracePoint.endCoords[0], tracePoint.endCoords[1]);
@@ -221,10 +235,13 @@ function _convertBack(canvasCoords) {
 
 function drawMap(data) {
     var canvas = document.getElementById('coastline');
+    // canvas.width = canvas.clientWidth * PX_RATIO;
+    // canvas.height = canvas.clientHeight * PX_RATIO;
     canvas.width = canvas.clientWidth * PX_RATIO;
     canvas.height = canvas.clientHeight * PX_RATIO;
 
     const ctx = canvas.getContext('2d');
+    // ctx.lineWidth = PX_RATIO;
     ctx.lineWidth = PX_RATIO;
     ctx.lineJoin = ctx.lineCap = 'round';
     ctx.strokeStyle = 'white';
@@ -317,7 +334,8 @@ class Trace {
 
     addTracePoint(startCoords, endCoords) {
         this.tracePoints.push({ startCoords, endCoords });
-        this.tracePoints = this.tracePoints.slice(-1 * NUMBER_OF_SAVED_TRACES);
+        // this.tracePoints = this.tracePoints.slice(-1 * NUMBER_OF_SAVED_TRACES);
+        this.tracePoints = this.tracePoints.slice(-1 * settings.numberOfSavedTraces);
     }
 
     _convertCoords(gpsCoords) {
@@ -325,6 +343,7 @@ class Trace {
     }
 
     get _arcCoefficient() {
+        // return 10000 / PX_RATIO; // weird shit
         return 10000 / PX_RATIO; // weird shit
     }
 
@@ -338,6 +357,8 @@ class Trace {
 
 function updateCanvas() {
     const canvas = document.getElementById('canvas');
+    // canvas.width = canvas.clientWidth * PX_RATIO;
+    // canvas.height = canvas.clientHeight * PX_RATIO;
     canvas.width = canvas.clientWidth * PX_RATIO;
     canvas.height = canvas.clientHeight * PX_RATIO;
 }
