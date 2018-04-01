@@ -31,14 +31,27 @@ let template = {
     "login": "test"
 };
 
+// TODO: add basic auth here and config to not display logins/passwords on github
 app.post('/', function (req, res) {
     const data = req.body;
     log.push(data);
     log = log.slice(-100);
     console.log(JSON.stringify(data));
-    io.emit('update', { data: data });
+    io.emit('update', { data: escapeAllFields(data) });
     res.send('POST Success');
 });
+
+function escapeAllFields(obj) {
+    Object.keys(obj).forEach(function (key) {
+        if (typeof obj[key] === 'string') {
+            console.log(obj[key]);
+            obj[key] = escape(obj[key]);
+            console.log(obj[key]);
+        }
+    });
+
+    return obj;
+}
 
 io.on('connection', function (socket) {
     socket.emit('existingLog', { log: log });

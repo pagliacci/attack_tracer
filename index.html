@@ -8,33 +8,50 @@
     <title>Attack Tracer</title>
     <link rel="stylesheet" type="text/css" href="/static/style.css">
     <script src="/socket.io/socket.io.js"></script>
-
-    <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
-    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js' charset='utf-8'></script>
-
 </head>
 
 <body>
-    <div id="map">
-      <img src = "https://i.imgur.com/k6RbKKW.png">
+    <div class="content">
+        <img id="logo" src="https://i.imgur.com/k6RbKKW.png">
+        <div class="map-container">
+            <canvas id="coastline"></canvas>
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="attacks-info">
+            <table>
+                <thead>
+                    <tr>
+                        <th>TIME</th>
+                        <th>SOURCE COUNTRY</th>
+                        <!-- <th>SOURCE CITY</th> -->
+                        <th>SOURCE IP</th>
+                        <th>DESTINATION COUNTRY</th>
+                        <!-- <th>DESTINATION CITY</th> -->
+                        <th>DESTINATION IP</th>
+                        <th>LOGIN</th>
+                        <th>PASSWORD</th>
+                    </tr>
+                </thead>
+                <tbody class="events">
+                </tbody>
+            </table>
+        </div>
+        <div class="top-passwords">
+            <table>
+                <thead>
+                    <tr>
+                        <th>TOP PASSWORDS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="table-container">
-        <table class="wanna-be-console">
-            <thead>
-                <th>TIME</th>
-                <th>SOURCE COUNTRY</th>
-                <th>SOURCE CITY</th>
-                <th>SOURCE IP</th>
-                <th>DESTINATION COUNTRY</th>
-                <th>DESTINATION CITY</th>
-                <th>DESTINATION IP</th>
-                <th>LOGIN</th>
-                <th>PASSWORD</th>
-            </thead>
-            <tbody class="events">
-            </tbody>
-        </table>
+    <div class="test-controls">
+        <button id="button">button</button>
+        <label for="fire-lots-of-shit">Fire lots of shit!</label>
+        <input type="checkbox" id="fire-lots-of-shit" />
     </div>
     <script src="/static/main.js"></script>
 </body>
