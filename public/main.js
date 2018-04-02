@@ -8,7 +8,7 @@ const settings = {
 };
 
 gui.add(settings, 'numberOfSavedTraces', 1, 100);
-gui.add(settings, 'lineWidth', 1, 10);
+gui.add(settings, 'lineWidth', 1, 5);
 gui.add(settings, 'traceOpacityCoefficient', 1, 30);
 gui.add(settings, 'animationSpeed', 0.001, 0.05);
 
