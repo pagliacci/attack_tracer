@@ -2,11 +2,15 @@ const gui = new dat.GUI();
 
 const settings = {
     numberOfSavedTraces: 30,
-    lineWidth: 2
+    lineWidth: 2,
+    traceOpacityCoefficient: 30,
+    animationSpeed: 0.02
 };
 
 gui.add(settings, 'numberOfSavedTraces', 1, 100);
 gui.add(settings, 'lineWidth', 1, 10);
+gui.add(settings, 'traceOpacityCoefficient', 1, 30);
+gui.add(settings, 'animationSpeed', 0.001, 0.05);
 
 const NUMBER_OF_SAVED_TRACES = 30;
 const PX_RATIO = 2;
@@ -116,7 +120,8 @@ function tryToAnimate() {
         const initialArcRadius = 30 * PX_RATIO;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const animationStep = 0.02;
+        // const animationStep = 0.02;
+        const animationStep = settings.animationSpeed;
 
         traces.forEach(p => {
             if (p.currentPosition >= 1) {
@@ -143,7 +148,7 @@ function tryToAnimate() {
                 p.tracePoints.forEach((tracePoint, index) => {
                     ctx.beginPath();
                     // ctx.strokeStyle = `rgba(255, 0, 0, ${1 * index / NUMBER_OF_SAVED_TRACES})`;
-                    ctx.strokeStyle = `rgba(255, 0, 0, ${1 * index / settings.numberOfSavedTraces})`;
+                    ctx.strokeStyle = `rgba(255, 0, 0, ${1 * index / settings.traceOpacityCoefficient})`;
                     // ctx.lineWidth = LINE_WIDTH * index / NUMBER_OF_SAVED_TRACES;
                     ctx.moveTo(tracePoint.startCoords[0], tracePoint.startCoords[1]);
                     ctx.lineTo(tracePoint.endCoords[0], tracePoint.endCoords[1]);
