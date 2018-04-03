@@ -1,10 +1,10 @@
 const gui = new dat.GUI();
 
 const settings = {
-    numberOfSavedTraces: 30,
-    lineWidth: 2,
-    traceOpacityCoefficient: 30,
-    animationSpeed: 0.02
+    numberOfSavedTraces: 10,
+    lineWidth: 3, // 2?
+    traceOpacityCoefficient: 4,
+    animationSpeed: 0.035
 };
 
 gui.add(settings, 'numberOfSavedTraces', 1, 100);
@@ -17,6 +17,9 @@ const PX_RATIO = 2;
 const LINE_WIDTH = 2;
 const FIREWORK_DISTANCE = 100;
 
+const LAND_GEOJSON_URL = '/static/land.geojson';
+const COASTLINE_GEOJSON_URL = '/static/coastline.geojson';
+
 const POINT_STATUSES = {
     charging: 'charging',
     inAir: 'inAir',
@@ -24,7 +27,7 @@ const POINT_STATUSES = {
 }
 
 let geojson;
-fetch('/static/coastline.geojson')
+    fetch(LAND_GEOJSON_URL)
     .then(function (response) {
         response.blob().then(function (data) {
             let reader = new FileReader();
@@ -239,17 +242,40 @@ function _convertBack(canvasCoords) {
 }
 
 function drawMap(data) {
+    drawLand(data);
+    // drawCoastline(data);
+}
+
+function drawLand(data){
     var canvas = document.getElementById('coastline');
-    // canvas.width = canvas.clientWidth * PX_RATIO;
-    // canvas.height = canvas.clientHeight * PX_RATIO;
     canvas.width = canvas.clientWidth * PX_RATIO;
     canvas.height = canvas.clientHeight * PX_RATIO;
 
     const ctx = canvas.getContext('2d');
-    // ctx.lineWidth = PX_RATIO;
+    ctx.lineWidth = PX_RATIO;
+    ctx.fillStyle = '#373634';
+
+    for (let i = 0; i < data.features.length; i++) {
+        const line = data.features[i].geometry.coordinates[0];
+        for (let j = 0; j < line.length; j++) {
+            ctx[j ? 'lineTo' : 'moveTo'](
+                (line[j][0] + 180) * canvas.width / 360,
+                (-line[j][1] + 90) * canvas.height / 180);
+        }
+    }
+    ctx.fill();
+}
+
+function drawCoastline(data){
+    var canvas = document.getElementById('coastline');
+    canvas.width = canvas.clientWidth * PX_RATIO;
+    canvas.height = canvas.clientHeight * PX_RATIO;
+
+    const ctx = canvas.getContext('2d');
     ctx.lineWidth = PX_RATIO;
     ctx.lineJoin = ctx.lineCap = 'round';
     ctx.strokeStyle = 'white';
+    ctx.fillStyle = 'white';
     ctx.beginPath();
 
     for (let i = 0; i < data.features.length; i++) {
