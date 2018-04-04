@@ -90,15 +90,17 @@ function updateList(event) {
     }
 };
 
-socket.on('existingLog', function (log) {
-    setListContent(log.log);
+socket.on('existingLog', function (data) {
+    const topPasswords = data.topPasswords;
+    setListContent(data.log);
 });
 
 socket.on('update', function (data) {
-    let d = data.data;
-    updateList(data.data);
-    let src = [d.src_longitude, d.src_latitude]; //idk pochemu tak
-    let dst = [d.dst_longitude, d.dst_latitude];
+    let attackInfo = data.attackInfo;
+    const topPasswords = data.topPasswords;
+    updateList(attackInfo);
+    let src = [attackInfo.src_longitude, attackInfo.src_latitude]; //idk pochemu tak
+    let dst = [attackInfo.dst_longitude, attackInfo.dst_latitude];
 
     traces.push(new Trace(src, dst));
 });

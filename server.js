@@ -14,6 +14,8 @@ app.use('/static', express.static(__dirname + '/public'));
 
 let log = [];
 
+let passwords = {};
+
 let template = {
     "src_city": "St Petersburg",
     "dst_latitude": 30.2642,
@@ -36,9 +38,27 @@ app.post('/', function (req, res) {
     const data = req.body;
     log.push(data);
     log = log.slice(-100);
+
+    const password = data.password;
+    if (passwords[password]) {
+        passwords[password]++;
+    } else {
+        passwords[password] = 1;
+    }
+
     console.log(JSON.stringify(data));
-    io.emit('update', { data: escapeAllFields(data) });
+    io.emit('update', {
+        attackInfo: escapeAllFields(data),
+        topPasswords: getTopTenPasswords(passwords)
+    });
     res.send('POST Success');
+});
+
+io.on('connection', function (socket) {
+    socket.emit('existingLog', {
+        log: log,
+        topPasswords: getTopTenPasswords(passwords)
+    });
 });
 
 function escapeAllFields(obj) {
@@ -53,8 +73,13 @@ function escapeAllFields(obj) {
     return obj;
 }
 
-io.on('connection', function (socket) {
-    socket.emit('existingLog', { log: log });
-});
+function getTopTenPasswords(passwords) {
+    const qwe = Object.keys(passwords).map(key => {
+        return { password: key, numberOfUses: passwords[key] };
+    });
+    const sortedByUsage = qwe.sort(q => q.numberOfUses);
+    return sortedByUsage.splice(0, 10);
+}
+
 
 server.listen(8080);
