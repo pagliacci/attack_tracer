@@ -1,7 +1,6 @@
 html, body {
     margin: 0;
     padding: 0;
-    /* overflow: hidden; */
     background-color: #000000;
 }
 
@@ -19,10 +18,8 @@ canvas {
 
 .map-container {
     position: relative;
-    /* width: 80vw; */
-    /* padding: 0 5%; */
-    height: 50vw;
-    flex: 5 5 100%;
+    /* height: 50vw; */
+    flex: 5 1 700px;
     margin: 25px 50px 0 50px;
 }
 
@@ -32,6 +29,14 @@ canvas {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin: 0 100px;
+    position: relative;
+}
+
+@media (max-width: 1000px) {
+    .content {
+        margin: 0;
+    }
 }
 
 table {
@@ -60,17 +65,18 @@ table td {
 }
 
 .attacks-info {
-    flex: 2 2 auto;
+    flex: 2 1 auto;
 }
 
 .top-passwords {
-    flex: 1 1 auto;
+    flex: 1 0 auto;
 }
 
 img {
-    height: 75pt;
     position: absolute;
     z-index: 2;
+    left: 40px;
+    height: 90px;
 }
 
 .test-controls {
