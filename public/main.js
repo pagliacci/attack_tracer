@@ -27,7 +27,7 @@ const POINT_STATUSES = {
 }
 
 let geojson;
-    fetch(LAND_GEOJSON_URL)
+fetch(LAND_GEOJSON_URL)
     .then(function (response) {
         response.blob().then(function (data) {
             let reader = new FileReader();
@@ -55,11 +55,11 @@ let socket = io.connect('/');
 function unescapeOrBlank(stringToUnescape) {
     return stringToUnescape ? unescape(stringToUnescape) : '-';
 }
-function createTableRow(data) {
-    let tr = document.createElement('tr');
-    let date = new Date(unescape(data.time));
-    let time = date.toString().match(/\d\d:\d\d:\d\d/g)[0];
-    let dataToDisplay = [
+function createAttackTableRow(data) {
+    const tr = document.createElement('tr');
+    const date = new Date(unescape(data.time));
+    const time = date.toString().match(/\d\d:\d\d:\d\d/g)[0];
+    const dataToDisplay = [
         time,
         data.src_country,
         data.src_ip,
@@ -69,39 +69,63 @@ function createTableRow(data) {
         data.password
     ];
     dataToDisplay.forEach((value) => {
-        let td = document.createElement('td');
+        const td = document.createElement('td');
         td.innerText = unescapeOrBlank(value);
         tr.appendChild(td);
     })
 
     return tr;
 };
-function setListContent(events) {
-    let list = document.getElementsByClassName('events')[0];
-    let listElements = events.slice(-20).map(e => createTableRow(e));
+function setAttacksListContent(events) {
+    const list = document.getElementsByClassName('events')[0];
+    const listElements = events.slice(-20).map(e => createAttackTableRow(e));
     listElements.slice().reverse().forEach(e => list.appendChild(e));
 };
-function updateList(event) {
-    let list = document.getElementsByClassName('events')[0];
-    let li = createTableRow(event);
+function updateAttacksList(event) {
+    const list = document.getElementsByClassName('events')[0];
+    const li = createAttackTableRow(event);
     list.insertBefore(li, list.firstChild);
     if (list.children.length > 20) {
         list.removeChild(list.lastChild);
     }
 };
+function updateTopPasswordsList(topPasswords) {
+    const topPasswordsBody = document.querySelector('.top-passwords tbody');
+    clearElementChildren(topPasswordsBody);
+    const rows = topPasswords
+        .sort(p => p.numberOfUses)
+        .map(p => {
+            const td = document.createElement('td');
+            td.innerText = unescapeOrBlank(p.password);
+            const tr = document.createElement('tr');
+            tr.appendChild(td);
+
+            return tr;
+        });
+
+    rows.forEach(r => {
+        topPasswordsBody.appendChild(r);
+    })
+}
+function clearElementChildren(element) {
+    while (element.firstChild) {
+        element.removeChild(element.firstChild);
+    }
+}
 
 socket.on('existingLog', function (data) {
     const topPasswords = data.topPasswords;
-    setListContent(data.log);
+    setAttacksListContent(data.log);
+    updateTopPasswordsList(data.topPasswords);
 });
 
 socket.on('update', function (data) {
-    let attackInfo = data.attackInfo;
-    const topPasswords = data.topPasswords;
-    updateList(attackInfo);
-    let src = [attackInfo.src_longitude, attackInfo.src_latitude]; //idk pochemu tak
-    let dst = [attackInfo.dst_longitude, attackInfo.dst_latitude];
+    const attackInfo = data.attackInfo;
+    updateAttacksList(attackInfo);
+    updateTopPasswordsList(data.topPasswords)
 
+    const src = [attackInfo.src_longitude, attackInfo.src_latitude]; //idk pochemu tak
+    const dst = [attackInfo.dst_longitude, attackInfo.dst_latitude];
     traces.push(new Trace(src, dst));
 });
 
@@ -248,7 +272,7 @@ function drawMap(data) {
     // drawCoastline(data);
 }
 
-function drawLand(data){
+function drawLand(data) {
     var canvas = document.getElementById('coastline');
     canvas.width = canvas.clientWidth * PX_RATIO;
     canvas.height = canvas.clientHeight * PX_RATIO;
@@ -268,7 +292,7 @@ function drawLand(data){
     ctx.fill();
 }
 
-function drawCoastline(data){
+function drawCoastline(data) {
     var canvas = document.getElementById('coastline');
     canvas.width = canvas.clientWidth * PX_RATIO;
     canvas.height = canvas.clientHeight * PX_RATIO;
