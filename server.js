@@ -1,4 +1,5 @@
 let express = require('express');
+let auth = require('http-auth');
 let app = express();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
@@ -12,29 +13,33 @@ app.get('/', function (req, res) {
 
 app.use('/static', express.static(__dirname + '/public'));
 
+let basic = auth.basic({
+    file: __dirname + '/users.htpasswd'
+});
+
 let log = [];
 
 let passwords = {};
 
-let template = {
-    "src_city": "St Petersburg",
-    "dst_latitude": 30.2642,
-    "dst_longitude": 59.8944,
-    "src_latitude": -74.00598,
-    "src_longitude": 40.71448,
-    "dst_city": "St Petersburg",
-    "src_country": "Russia",
-    "password": "qwe",
-    "attack_type": "ssh_bruteforce",
-    "src_ip": "188.227.10.209",
-    "dst_country": "Russia",
-    "time": "2018-02-23T10:33:19.866686",
-    "dst_ip": "91.142.94.74",
-    "login": "test"
-};
+// let template = {
+//     "src_city": "St Petersburg",
+//     "dst_latitude": 30.2642,
+//     "dst_longitude": 59.8944,
+//     "src_latitude": -74.00598,
+//     "src_longitude": 40.71448,
+//     "dst_city": "St Petersburg",
+//     "src_country": "Russia",
+//     "password": "qwe",
+//     "attack_type": "ssh_bruteforce",
+//     "src_ip": "188.227.10.209",
+//     "dst_country": "Russia",
+//     "time": "2018-02-23T10:33:19.866686",
+//     "dst_ip": "91.142.94.74",
+//     "login": "test"
+// };
 
 // TODO: add basic auth here and config to not display logins/passwords on github
-app.post('/', function (req, res) {
+app.post('/', auth.connect(basic), function (req, res) {
     const data = req.body;
     log.push(data);
     log = log.slice(-100);
