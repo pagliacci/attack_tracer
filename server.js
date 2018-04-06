@@ -82,7 +82,10 @@ function getTopTenPasswords(passwords) {
     const passwordsWithUsageNumber = Object.keys(passwords).map(key => {
         return { password: key, numberOfUses: passwords[key] };
     });
-    const sortedByUsage = passwordsWithUsageNumber.sort(p => p.numberOfUses);
+    const sortedByUsage = passwordsWithUsageNumber
+        .sort((a, b) => {
+            return b.numberOfUses - a.numberOfUses;
+        });
     return sortedByUsage.splice(0, 10);
 }
 
