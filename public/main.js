@@ -93,7 +93,6 @@ function updateTopPasswordsList(topPasswords) {
     const topPasswordsBody = document.querySelector('.top-passwords tbody');
     clearElementChildren(topPasswordsBody);
     const rows = topPasswords
-        .sort(p => p.numberOfUses)
         .map(p => {
             const td = document.createElement('td');
             td.innerText = unescapeOrBlank(p.password);

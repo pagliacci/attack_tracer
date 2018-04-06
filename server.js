@@ -79,10 +79,10 @@ function escapeAllFields(obj) {
 }
 
 function getTopTenPasswords(passwords) {
-    const qwe = Object.keys(passwords).map(key => {
+    const passwordsWithUsageNumber = Object.keys(passwords).map(key => {
         return { password: key, numberOfUses: passwords[key] };
     });
-    const sortedByUsage = qwe.sort(q => q.numberOfUses);
+    const sortedByUsage = passwordsWithUsageNumber.sort(p => p.numberOfUses);
     return sortedByUsage.splice(0, 10);
 }
 
