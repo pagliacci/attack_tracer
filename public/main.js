@@ -16,6 +16,7 @@ const NUMBER_OF_SAVED_TRACES = 30;
 const PX_RATIO = 2;
 const LINE_WIDTH = 2;
 const FIREWORK_DISTANCE = 100;
+const NUMBER_OF_TABLE_ENTRIES = 10;
 
 const LAND_GEOJSON_URL = '/static/land.geojson';
 const COASTLINE_GEOJSON_URL = '/static/coastline.geojson';
@@ -78,14 +79,14 @@ function createAttackTableRow(data) {
 };
 function setAttacksListContent(events) {
     const list = document.getElementsByClassName('events')[0];
-    const listElements = events.slice(-20).map(e => createAttackTableRow(e));
+    const listElements = events.slice(-NUMBER_OF_TABLE_ENTRIES).map(e => createAttackTableRow(e));
     listElements.slice().reverse().forEach(e => list.appendChild(e));
 };
 function updateAttacksList(event) {
     const list = document.getElementsByClassName('events')[0];
     const li = createAttackTableRow(event);
     list.insertBefore(li, list.firstChild);
-    if (list.children.length > 20) {
+    if (list.children.length > NUMBER_OF_TABLE_ENTRIES) {
         list.removeChild(list.lastChild);
     }
 };

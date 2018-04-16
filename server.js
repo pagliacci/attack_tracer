@@ -42,7 +42,7 @@ let passwords = {};
 app.post('/', auth.connect(basic), function (req, res) {
     const data = req.body;
     log.push(data);
-    log = log.slice(-100);
+    log = log.slice(-10);
 
     const password = data.password;
     if (passwords[password]) {
