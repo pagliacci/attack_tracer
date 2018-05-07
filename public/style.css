@@ -19,6 +19,7 @@ html, body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     position: relative;
     height: 100%;
+    overflow: hidden;
 }
 
 .map-container {
