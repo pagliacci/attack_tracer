@@ -6,13 +6,6 @@ html, body {
     overflow: hidden;
 }
 
-/* #canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: transparent;
-} */
-
 .content {
     color: #d0d0d0;
     font-size: 14px;
@@ -27,9 +20,9 @@ html, body {
     height: 50vw;
     width: 100%;
     /* top: 40vh; */
-    transform: translate(0, -50%);
+    transform: translate(0, -45%);
     position: relative;
-    top: 50%;
+    top: 40%;
 }
 
 canvas {
@@ -68,7 +61,7 @@ table td {
 }
 
 .header {
-    height: 50px;
+    height: 65px;
 }
 
 .logo {
@@ -78,4 +71,5 @@ table td {
     height: 90px;
     /* height: 100%; */
     padding-left: 30px;
+    margin-top: -10px;
 }
