@@ -19,8 +19,6 @@ let basic = auth.basic({
 
 let log = [];
 
-let passwords = {};
-
 // let template = {
 //     "src_city": "St Petersburg",
 //     "dst_latitude": 30.2642,
@@ -38,31 +36,21 @@ let passwords = {};
 //     "login": "test"
 // };
 
-// TODO: add basic auth here and config to not display logins/passwords on github
 app.post('/', auth.connect(basic), function (req, res) {
     const data = req.body;
     log.push(data);
     log = log.slice(-10);
 
-    const password = data.password;
-    if (passwords[password]) {
-        passwords[password]++;
-    } else {
-        passwords[password] = 1;
-    }
-
     console.log(JSON.stringify(data));
     io.emit('update', {
-        attackInfo: escapeAllFields(data),
-        topPasswords: getTopTenPasswords(passwords)
+        attackInfo: escapeAllFields(data)
     });
     res.send('POST Success');
 });
 
 io.on('connection', function (socket) {
     socket.emit('existingLog', {
-        log: log,
-        topPasswords: getTopTenPasswords(passwords)
+        log: log
     });
 });
 
@@ -77,17 +65,5 @@ function escapeAllFields(obj) {
 
     return obj;
 }
-
-function getTopTenPasswords(passwords) {
-    const passwordsWithUsageNumber = Object.keys(passwords).map(key => {
-        return { password: key, numberOfUses: passwords[key] };
-    });
-    const sortedByUsage = passwordsWithUsageNumber
-        .sort((a, b) => {
-            return b.numberOfUses - a.numberOfUses;
-        });
-    return sortedByUsage.splice(0, 10);
-}
-
 
 server.listen(8080);

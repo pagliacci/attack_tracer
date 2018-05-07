@@ -1,42 +1,40 @@
 html, body {
+    height: 100%;
     margin: 0;
     padding: 0;
     background-color: #000000;
+    overflow: hidden;
+}
+
+/* #canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+} */
+
+.content {
+    color: #d0d0d0;
+    font-size: 14px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    position: relative;
+    height: 100%;
+}
+
+.map-container {
+    /* position: absolute; */
+    height: 50vw;
+    width: 100%;
+    /* top: 40vh; */
+    transform: translate(0, -50%);
+    position: relative;
+    top: 50%;
 }
 
 canvas {
     width: 100%;
     height: 100%;
-}
-
-#canvas {
     position: absolute;
-    top: 0;
-    left: 0;
-    background-color: transparent;
-}
-
-.map-container {
-    position: relative;
-    /* height: 50vw; */
-    flex: 5 1 700px;
-    margin: 25px 50px 0 50px;
-}
-
-.content {
-    color: #d0d0d0;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin: 0 100px 50px;
-    position: relative;
-}
-
-@media (max-width: 1000px) {
-    .content {
-        margin: 0;
-    }
 }
 
 table {
@@ -57,34 +55,26 @@ table td {
     padding: 5px;
 }
 
-.attacks-info, .top-passwords {
-    margin: 50px 50px 0 50px;
+.attacks-info {
     border: 1px solid gray;
     border-radius: 3px;
     overflow: hidden;
-}
-
-.attacks-info {
-    flex: 2 1 auto;
-}
-
-.top-passwords {
-    flex: 1 0 auto;
-}
-
-img {
-    position: absolute;
-    z-index: 2;
-    left: 40px;
-    height: 90px;
-}
-
-.test-controls {
     position: fixed;
     bottom: 0;
-    width: 200px;
-    z-index: 200;
-    display: inline-block;
-    margin: 20px;
-    background-color: palevioletred;
+    left: 50%;
+    transform: translate(-50%, 0);
+    max-height: 20%;
+}
+
+.header {
+    height: 50px;
+}
+
+.logo {
+    /* position: absolute; */
+    /* z-index: 2; */
+    left: 40px;
+    height: 90px;
+    /* height: 100%; */
+    padding-left: 30px;
 }

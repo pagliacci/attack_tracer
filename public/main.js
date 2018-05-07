@@ -1,4 +1,4 @@
-const gui = new dat.GUI();
+// const gui = new dat.GUI();
 
 const settings = {
     numberOfSavedTraces: 10,
@@ -7,16 +7,16 @@ const settings = {
     animationSpeed: 0.035
 };
 
-gui.add(settings, 'numberOfSavedTraces', 1, 100);
-gui.add(settings, 'lineWidth', 1, 5);
-gui.add(settings, 'traceOpacityCoefficient', 1, 30);
-gui.add(settings, 'animationSpeed', 0.001, 0.05);
+// gui.add(settings, 'numberOfSavedTraces', 1, 100);
+// gui.add(settings, 'lineWidth', 1, 5);
+// gui.add(settings, 'traceOpacityCoefficient', 1, 30);
+// gui.add(settings, 'animationSpeed', 0.001, 0.05);
 
 const NUMBER_OF_SAVED_TRACES = 30;
 const PX_RATIO = 2;
 const LINE_WIDTH = 2;
 const FIREWORK_DISTANCE = 100;
-const NUMBER_OF_TABLE_ENTRIES = 10;
+const NUMBER_OF_TABLE_ENTRIES = 5;
 
 const LAND_GEOJSON_URL = '/static/land.geojson';
 const COASTLINE_GEOJSON_URL = '/static/coastline.geojson';
@@ -42,7 +42,6 @@ fetch(LAND_GEOJSON_URL)
 
 window.onresize = () => {
     // TODO: make this work correctly
-    console.log('onresize');
     updateCanvas();
     drawMap(geojson);
 };
@@ -62,9 +61,9 @@ function createAttackTableRow(data) {
     const time = date.toString().match(/\d\d:\d\d:\d\d/g)[0];
     const dataToDisplay = [
         time,
-        data.src_country,
+        // data.src_country,
         data.src_ip,
-        data.dst_country,
+        // data.dst_country,
         data.dst_ip,
         data.login,
         data.password
@@ -90,23 +89,6 @@ function updateAttacksList(event) {
         list.removeChild(list.lastChild);
     }
 };
-function updateTopPasswordsList(topPasswords) {
-    const topPasswordsBody = document.querySelector('.top-passwords tbody');
-    clearElementChildren(topPasswordsBody);
-    const rows = topPasswords
-        .map(p => {
-            const td = document.createElement('td');
-            td.innerText = unescapeOrBlank(p.password);
-            const tr = document.createElement('tr');
-            tr.appendChild(td);
-
-            return tr;
-        });
-
-    rows.forEach(r => {
-        topPasswordsBody.appendChild(r);
-    })
-}
 function clearElementChildren(element) {
     while (element.firstChild) {
         element.removeChild(element.firstChild);
@@ -114,15 +96,12 @@ function clearElementChildren(element) {
 }
 
 socket.on('existingLog', function (data) {
-    const topPasswords = data.topPasswords;
     setAttacksListContent(data.log);
-    updateTopPasswordsList(data.topPasswords);
 });
 
 socket.on('update', function (data) {
     const attackInfo = data.attackInfo;
     updateAttacksList(attackInfo);
-    updateTopPasswordsList(data.topPasswords)
 
     const src = [attackInfo.src_longitude, attackInfo.src_latitude]; //idk pochemu tak
     const dst = [attackInfo.dst_longitude, attackInfo.dst_latitude];
@@ -198,6 +177,7 @@ function tryToAnimate() {
             if (p.status === POINT_STATUSES.firework) {
                 // TODO: figure out how to draw
                 // draws circles
+                ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, initialArcRadius * (p.currentPosition), 0, 2 * Math.PI);
                 p.currentPosition += animationStep * 3;
@@ -206,40 +186,6 @@ function tryToAnimate() {
                 // fireworks.push(...beams);
             }
         });
-
-        // fireworks.forEach(f => {
-
-        //     if (f.currentPosition >= 1) {
-        //         f.updateStatus();
-        //         // p.isActual = false;
-        //         // return;
-        //     }
-
-        //     const newPosition = f.currentPosition + animationStep;
-        //     const b = bezier2(f.src, f.dst, f.auxilaryPoint, newPosition);
-        //     ctx.save();
-
-        //     // logic that draws trace
-        //     // probably could be merged with the next piece
-        //     f.tracePoints.forEach((tracePoint, index) => {
-        //         ctx.beginPath();
-        //         ctx.strokeStyle = `rgba(255, 0, 0, ${1 * index / NUMBER_OF_SAVED_TRACES})`;
-        //         // ctx.lineWidth = LINE_WIDTH * index / NUMBER_OF_SAVED_TRACES;
-        //         ctx.moveTo(tracePoint.startCoords[0], tracePoint.startCoords[1]);
-        //         ctx.lineTo(tracePoint.endCoords[0], tracePoint.endCoords[1]);
-        //         ctx.stroke();
-        //     });
-
-        //     ctx.beginPath();
-        //     ctx.restore();
-        //     ctx.moveTo(f.x, f.y);
-        //     ctx.lineTo(b[0], b[1]);
-        //     ctx.stroke();
-        //     f.addTracePoint([f.x, f.y], [b[0], b[1]]);
-        //     f.x = b[0];
-        //     f.y = b[1];
-        //     f.currentPosition = newPosition;
-        // });
 
         requestAnimationFrame(draw);
     }
