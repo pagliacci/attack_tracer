@@ -5,6 +5,8 @@ let server = require('http').Server(app);
 let io = require('socket.io')(server);
 let path = require('path');
 
+const port = 8080;
+
 app.use(express.json());
 
 app.get('/', function (req, res) {
@@ -19,7 +21,7 @@ let basic = auth.basic({
 
 let log = [];
 
-// let template = {
+// const dataSample = {
 //     "src_city": "St Petersburg",
 //     "dst_latitude": 30.2642,
 //     "dst_longitude": 59.8944,
@@ -57,13 +59,17 @@ io.on('connection', function (socket) {
 function escapeAllFields(obj) {
     Object.keys(obj).forEach(function (key) {
         if (typeof obj[key] === 'string') {
-            console.log(obj[key]);
             obj[key] = escape(obj[key]);
-            console.log(obj[key]);
         }
     });
 
     return obj;
 }
 
-server.listen(8080);
+server.listen(port, err => {
+    if (err) {
+        return console.log(err);
+    }
+
+    console.log(`Server is listening on ${port} port`);
+});
