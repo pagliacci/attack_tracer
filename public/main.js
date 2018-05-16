@@ -46,7 +46,7 @@ function getTimeOrBlank(date) {
     if(isNaN(date.getTime())){
         return '-';
     } else {
-        return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        return date.toLocaleTimeString('en-GB');
     }
 }
 function createAttackTableRow(data) {
