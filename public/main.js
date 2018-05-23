@@ -7,6 +7,7 @@ const settings = {
 
 const PX_RATIO = 2;
 const NUMBER_OF_TABLE_ENTRIES = 5;
+const SRC_POINT_RADIUS = 15;
 
 const LAND_GEOJSON_URL = '/static/land.geojson';
 
@@ -119,43 +120,41 @@ function tryToAnimate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const animationStep = settings.animationSpeed;
 
-        traces.forEach(p => {
-            if (p.currentPosition >= 1) {
-                p.updateStatus();
+        traces.forEach(trace => {
+            if (trace.currentPosition >= 1) {
+                trace.updateStatus();
             }
 
-            ctx.fillStyle = p.color;
+            ctx.fillStyle = trace.color;
 
-            if (p.status === POINT_STATUSES.inAir) {
-                const newPosition = p.currentPosition + animationStep;
-                const b = bezier2(p.src, p.dst, p.auxilaryPoint, newPosition);
+            if (trace.status === POINT_STATUSES.inAir) {
+                const newPosition = trace.currentPosition + animationStep;
+                const b = bezier2(trace.src, trace.dst, trace.auxilaryPoint, newPosition);
                 ctx.save();
 
+                drawSrcPoint(ctx, trace);
+
                 // logic that draws trace
-                p.tracePoints.forEach((tracePoint, index) => {
-                    ctx.beginPath();
-                    ctx.strokeStyle = `rgba(255, 0, 0, ${1 * index / settings.traceOpacityCoefficient})`;
-                    ctx.moveTo(tracePoint.startCoords[0], tracePoint.startCoords[1]);
-                    ctx.lineTo(tracePoint.endCoords[0], tracePoint.endCoords[1]);
-                    ctx.stroke();
+                trace.tracePoints.forEach((tracePoint, index) => {
+                    drawTrace(ctx, tracePoint, index);
                 });
 
                 ctx.beginPath();
                 ctx.restore();
-                ctx.moveTo(p.x, p.y);
+                ctx.moveTo(trace.x, trace.y);
                 ctx.lineTo(b[0], b[1]);
                 ctx.stroke();
-                p.addTracePoint([p.x, p.y], [b[0], b[1]]);
-                p.x = b[0];
-                p.y = b[1];
-                p.currentPosition = newPosition;
+                trace.addTracePoint([trace.x, trace.y], [b[0], b[1]]);
+                trace.x = b[0];
+                trace.y = b[1];
+                trace.currentPosition = newPosition;
             }
 
-            if (p.status === POINT_STATUSES.firework) {
+            if (trace.status === POINT_STATUSES.firework) {
                 ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, initialArcRadius * (p.currentPosition), 0, 2 * Math.PI);
-                p.currentPosition += animationStep * 3;
+                ctx.arc(trace.x, trace.y, initialArcRadius * (trace.currentPosition), 0, 2 * Math.PI);
+                trace.currentPosition += animationStep * 3;
                 ctx.stroke();
             }
         });
@@ -200,6 +199,22 @@ function bezier2(src, dst, auxilaryPoint, t) {
         f(src[0], dst[0], auxilaryPoint[0]),
         f(src[1], dst[1], auxilaryPoint[1])
     ];
+}
+
+function drawTrace(context, tracePoint, index) {
+    context.beginPath();
+    context.strokeStyle = `rgba(255, 0, 0, ${1 * index / settings.traceOpacityCoefficient})`;
+    context.moveTo(tracePoint.startCoords[0], tracePoint.startCoords[1]);
+    context.lineTo(tracePoint.endCoords[0], tracePoint.endCoords[1]);
+    context.stroke();
+}
+
+function drawSrcPoint(context, trace) {
+    const srcPointIntensityCoefficient = 1 - trace.currentPosition;
+    context.beginPath();
+    context.fillStyle = `rgba(255, 0, 0, ${srcPointIntensityCoefficient}`;
+    context.arc(trace.src[0], trace.src[1], SRC_POINT_RADIUS * srcPointIntensityCoefficient, 0, 2 * Math.PI);
+    context.fill();
 }
 
 class Trace {
