@@ -1,8 +1,9 @@
 const settings = {
     numberOfSavedTraces: 10,
-    lineWidth: 3,
+    lineWidth: 2,
     traceOpacityCoefficient: 4,
-    animationSpeed: 0.035
+    animationSpeed: 0.035,
+    arcCoefficient: 5
 };
 
 const PX_RATIO = 2;
@@ -245,10 +246,9 @@ class Trace {
         const src = this.src;
         const dst = this.dst;
         const middlePoint = this._middlePoint;
-        const mcLength = 1 / this.length * this._arcCoefficient;  // weird shit
         const auxVector = [
-            -1 * (dst[1] - src[1]) / mcLength,
-            (dst[0] - src[0]) / mcLength
+            -1 * (dst[1] - src[1]) / this._arcCoefficient,
+            (dst[0] - src[0]) / this._arcCoefficient
         ];
         return [
             middlePoint[0] + auxVector[0],
@@ -270,7 +270,7 @@ class Trace {
     }
 
     get _arcCoefficient() {
-        return 10000 / PX_RATIO;
+        return settings.arcCoefficient;
     }
 
     get _middlePoint() {
