@@ -3,9 +3,9 @@ let auth = require('http-auth');
 let app = express();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
-let path = require('path');
+let config = require('./config.js');
 
-const port = 8080;
+const port = config.port || 8080;
 
 app.use(express.json());
 
