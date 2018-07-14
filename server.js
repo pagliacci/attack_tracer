@@ -40,6 +40,7 @@ let log = [];
 
 app.post('/', auth.connect(basic), function (req, res) {
     const data = req.body;
+    data.time = new Date().toISOString();
     log.push(data);
     log = log.slice(-10);
 
