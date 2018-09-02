@@ -3,11 +3,14 @@ let auth = require('http-auth');
 let app = express();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
+let compression = require('compression');
 let config = require('./config.js');
 
 const port = config.port || 8080;
 
 app.use(express.json());
+
+app.use(compression());
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
