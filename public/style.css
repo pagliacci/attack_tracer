@@ -64,8 +64,8 @@ table td, table th {
 }
 
 .logo {
-    left: 40px;
-    height: 90px;
+    height: 120px;
+    position: absolute;
     padding-left: 30px;
-    margin-top: -10px;
+    z-index: 1;
 }
