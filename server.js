@@ -32,7 +32,7 @@ let log = [];
 //     "src_longitude": 40.71448,
 //     "dst_city": "St Petersburg",
 //     "src_country": "Russia",
-//     "password": "qwe",
+//     "password": "password1",
 //     "attack_type": "ssh_bruteforce",
 //     "src_ip": "188.227.10.209",
 //     "dst_country": "Russia",
